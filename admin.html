@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin - Edit Registration Data</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background: #020617;
+        margin: 0;
+        padding: 20px;
+        min-height: 100vh;
+        position: relative;
+        overflow: hidden;
+      }
+      body::before {
+        content: "";
+        position: fixed;
+        inset: -20%;
+        background:
+          radial-gradient(circle at 20% 20%, rgba(34, 211, 238, 0.2), transparent 35%),
+          radial-gradient(circle at 80% 25%, rgba(168, 85, 247, 0.22), transparent 35%),
+          radial-gradient(circle at 50% 85%, rgba(14, 165, 233, 0.2), transparent 40%),
+          linear-gradient(135deg, #020617, #0f172a 45%, #111827);
+        animation: darkBgShift 18s ease-in-out infinite alternate;
+        z-index: 0;
+        pointer-events: none;
+      }
+      body::after {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background:
+          repeating-linear-gradient(
+            120deg,
+            rgba(56, 189, 248, 0.08) 0px,
+            rgba(56, 189, 248, 0.08) 2px,
+            transparent 2px,
+            transparent 90px
+          );
+        animation: stripeMove 16s linear infinite;
+        z-index: 0;
+        pointer-events: none;
+      }
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        background: rgba(15, 23, 42, 0.72);
+        backdrop-filter: blur(10px);
+        border-radius: 14px;
+        padding: 20px;
+        box-shadow: 0 18px 45px rgba(0, 0, 0, 0.45);
+        border: 1px solid rgba(148, 163, 184, 0.35);
+        position: relative;
+        z-index: 1;
+      }
+      h2 {
+        margin-top: 0;
+        color: #f8fafc;
+      }
+      .top-link {
+        display: inline-block;
+        margin-bottom: 12px;
+        text-decoration: none;
+        color: #67e8f9;
+        font-weight: 600;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 14px;
+      }
+      th,
+      td {
+        border: 1px solid #334155;
+        padding: 8px;
+        text-align: left;
+        color: #e2e8f0;
+        vertical-align: middle;
+      }
+      th {
+        background: rgba(30, 41, 59, 0.9);
+      }
+      td {
+        background: rgba(15, 23, 42, 0.72);
+      }
+      input,
+      select {
+        width: 100%;
+        padding: 6px;
+        box-sizing: border-box;
+        border: 1px solid #334155;
+        border-radius: 6px;
+        background: rgba(15, 23, 42, 0.9);
+        color: #e2e8f0;
+      }
+      input:focus,
+      select:focus {
+        outline: none;
+        border-color: #22d3ee;
+        box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.2);
+      }
+      button {
+        padding: 7px 12px;
+        border: none;
+        border-radius: 6px;
+        background: linear-gradient(90deg, #06b6d4, #7c3aed);
+        color: #fff;
+        cursor: pointer;
+        min-width: 74px;
+        font-weight: 700;
+      }
+      button:hover {
+        background: linear-gradient(90deg, #0891b2, #6d28d9);
+      }
+      .delete-btn {
+        background: linear-gradient(90deg, #ef4444, #dc2626);
+      }
+      .delete-btn:hover {
+        background: linear-gradient(90deg, #dc2626, #b91c1c);
+      }
+      .action-cell {
+        width: 170px;
+      }
+      .action-buttons {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        justify-content: center;
+        white-space: nowrap;
+      }
+      .message {
+        margin-top: 12px;
+        font-size: 14px;
+        font-weight: 600;
+        color: #cbd5e1;
+      }
+      .table-wrap {
+        overflow-x: auto;
+      }
+      @keyframes darkBgShift {
+        0% {
+          transform: translate3d(-2%, -1%, 0) scale(1);
+        }
+        100% {
+          transform: translate3d(2%, 1%, 0) scale(1.04);
+        }
+      }
+      @keyframes stripeMove {
+        from {
+          transform: translateX(0);
+        }
+        to {
+          transform: translateX(-120px);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      
+      <a class="top-link" href="/index.html">Go to Registration Page</a>
+      <h2>Admin Panel (Edit Data)</h2>
+      <div class="message" id="message"></div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>First Name</th>
+              <th>Last Name</th>
+              <th>Mobile Number</th>
+              <th>Address</th>
+              <th>Email</th>
+              <th>Gender</th>
+              <th>Nationality</th>
+              <th class="action-cell">Action</th>
+            </tr>
+          </thead>
+          <tbody id="dataBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <script>
+      const dataBody = document.getElementById("dataBody");
+      const message = document.getElementById("message");
+
+      function rowTemplate(item) {
+        return `
+          <tr data-id="${item.id}">
+            <td><input name="id" type="number" min="1" value="${item.id}" /></td>
+            <td><input name="firstName" value="${item.firstName}" /></td>
+            <td><input name="lastName" value="${item.lastName}" /></td>
+            <td><input name="mobileNumber" value="${item.mobileNumber}" /></td>
+            <td><input name="address" value="${item.address}" /></td>
+            <td><input name="email" value="${item.email}" /></td>
+            <td>
+              <select name="gender">
+                <option value="Male" ${item.gender === "Male" ? "selected" : ""}>Male</option>
+                <option value="Female" ${item.gender === "Female" ? "selected" : ""}>Female</option>
+                <option value="Other" ${item.gender === "Other" ? "selected" : ""}>Other</option>
+              </select>
+            </td>
+            <td><input name="nationality" value="${item.nationality}" /></td>
+            <td class="action-cell">
+              <div class="action-buttons">
+                <button type="button" onclick="saveRow(${item.id}, this)">Save</button>
+                <button class="delete-btn" type="button" onclick="deleteRow(${item.id}, this)">Delete</button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }
+
+      async function loadData() {
+        try {
+          const response = await fetch("/api/registrations");
+          const data = await response.json();
+          dataBody.innerHTML = data.map(rowTemplate).join("");
+        } catch (_error) {
+          message.style.color = "red";
+          message.textContent = "Failed to load data.";
+        }
+      }
+
+      async function saveRow(id, button) {
+        const row = button.closest("tr");
+        const newId = Number(row.querySelector('[name="id"]').value);
+        const payload = {
+          id: newId,
+          firstName: row.querySelector('[name="firstName"]').value.trim(),
+          lastName: row.querySelector('[name="lastName"]').value.trim(),
+          mobileNumber: row.querySelector('[name="mobileNumber"]').value.trim(),
+          address: row.querySelector('[name="address"]').value.trim(),
+          email: row.querySelector('[name="email"]').value.trim(),
+          gender: row.querySelector('[name="gender"]').value,
+          nationality: row.querySelector('[name="nationality"]').value.trim(),
+        };
+
+        if (!Number.isInteger(newId) || newId < 1) {
+          message.style.color = "red";
+          message.textContent = "ID must be a positive number.";
+          return;
+        }
+
+        try {
+          const response = await fetch(`/api/registrations/${id}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
+          const data = await response.json();
+
+          if (!response.ok) {
+            message.style.color = "red";
+            message.textContent = data.message || "Update failed.";
+            return;
+          }
+
+          row.setAttribute("data-id", String(newId));
+          const saveBtn = row.querySelector('button[onclick^="saveRow"]');
+          const deleteBtn = row.querySelector('button[onclick^="deleteRow"]');
+          if (saveBtn) {
+            saveBtn.setAttribute("onclick", `saveRow(${newId}, this)`);
+          }
+          if (deleteBtn) {
+            deleteBtn.setAttribute("onclick", `deleteRow(${newId}, this)`);
+          }
+          message.style.color = "green";
+          message.textContent = `Record ${newId} updated successfully.`;
+        } catch (_error) {
+          message.style.color = "red";
+          message.textContent = "Server error while updating.";
+        }
+      }
+
+      async function deleteRow(id, button) {
+        const ok = confirm(`Delete record ${id}?`);
+        if (!ok) {
+          return;
+        }
+
+        try {
+          const response = await fetch(`/api/registrations/${id}`, {
+            method: "DELETE",
+          });
+          const data = await response.json();
+
+          if (!response.ok) {
+            message.style.color = "red";
+            message.textContent = data.message || "Delete failed.";
+            return;
+          }
+
+          const row = button.closest("tr");
+          row.remove();
+          message.style.color = "green";
+          message.textContent = `Record ${id} deleted successfully.`;
+        } catch (_error) {
+          message.style.color = "red";
+          message.textContent = "Server error while deleting.";
+        }
+      }
+
+      loadData();
+    </script>
+  </body>
+</html>
