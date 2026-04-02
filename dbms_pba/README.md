@@ -4,6 +4,23 @@ Simple web app where users register with personal details, data is stored in **S
 
 **Repository:** [github.com/Harsh-jethva/DBMS](https://github.com/Harsh-jethva/DBMS)
 
+## Live demo (after you deploy)
+
+**I cannot log into your GitHub or Render account from here.** This repo includes `render.yaml` so you can get a public link in about 2 minutes:
+
+1. Push the latest code to GitHub (including `render.yaml` and this README).
+2. Go to [render.com](https://render.com) → sign up (free) with GitHub.
+3. **New** → **Blueprint** → connect **`Harsh-jethva/DBMS`** → **Apply** (or **New** → **Web Service** → same repo, **Build:** `npm install`, **Start:** `npm start`).
+4. When the deploy finishes, copy the URL (e.g. `https://dbms-registration.onrender.com`).
+5. Paste that URL below in your README on GitHub (edit on GitHub or locally):
+
+```markdown
+**Live site:** https://YOUR-APP.onrender.com  
+**Admin:** https://YOUR-APP.onrender.com/admin.html
+```
+
+**Note:** On free hosting, SQLite data may reset if the service sleeps or redeploys. For permanent DB, use a managed database later.
+
 ---
 
 ## Features

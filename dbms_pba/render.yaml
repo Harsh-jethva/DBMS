@@ -1,0 +1,17 @@
+# Render Blueprint — deploy this repo as a Web Service
+# https://render.com/docs/blueprint-spec
+#
+# After push: Render Dashboard → New → Blueprint → Connect repo → apply
+
+services:
+  - type: web
+    name: dbms-registration
+    runtime: node
+    plan: free
+    region: oregon
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /
+    envVars:
+      - key: NODE_VERSION
+        value: 20.18.0
